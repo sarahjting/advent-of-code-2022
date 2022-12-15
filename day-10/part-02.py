@@ -1,32 +1,29 @@
-def calculate_cycles(lines):
-    cycles = [1]
-    current_cycle = 0
+class Cycles:
+    def __init__(self, input):
+        self.cycles = [1]
+        self.current_cycle = 0
 
-    def current_cycle_value():
-        return cycles[current_cycle]
+        for line in input:
+            if (line[0:4] == 'noop'):
+                self.noop()
+            else:
+                operation, delta = line.strip('\n').split(' ')
+                self.addx(int(delta))
 
-    def noop():
-        nonlocal current_cycle
-        cycles.append(current_cycle_value())
-        current_cycle += 1
+    def current_value(self):
+        return self.cycles[self.current_cycle]
 
-    def addx(delta):
-        nonlocal current_cycle
-        cycles.append(current_cycle_value())
-        cycles.append(current_cycle_value() + delta)
-        current_cycle += 2
+    def noop(self):
+        self.cycles.append(self.current_value())
+        self.current_cycle += 1
 
-    for line in lines:
-        if (line[0:4] == 'noop'):
-            noop()
-        else:
-            operation, delta = line.strip('\n').split(' ')
-            addx(int(delta))
-
-    return cycles
+    def addx(self, delta):
+        self.cycles.append(self.current_value())
+        self.cycles.append(self.current_value() + delta)
+        self.current_cycle += 2
 
 with open('input') as file:
-    cycles = calculate_cycles([x for x in file])
+    cycles = Cycles([x for x in file]).cycles
     for row in range(0, 6):
         string = ''
         for col in range(0, 40):
